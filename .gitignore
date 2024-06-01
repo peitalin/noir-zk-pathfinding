@@ -1,0 +1,5 @@
+.DS_store
+cache
+out
+lib
+.env
