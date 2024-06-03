@@ -4,6 +4,8 @@ pragma solidity ^0.8.13;
 import {Test, console} from "forge-std/Test.sol";
 import {UltraVerifier} from "../circuits-radius/contract/radius/plonk_vk.sol";
 import {Radius} from "../src/Radius.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+
 
 
 contract UltraVerifierTest is Test {
@@ -48,9 +50,12 @@ contract UltraVerifierTest is Test {
 		assert(result);
 	}
 
-	function test_DynamicProof() public {
 
-		// vm.assume(0 < x1 && x1 < 10);
+	/// forge-config: default.fuzz.runs = 2
+	function test_DynamicProof(uint32 x1) public {
+		// run this 2 times as it uses scripts with read/write operations, slow
+
+		vm.assume(0 < x1 && x1 < 10);
 
 		string[] memory _fieldNames = new string[](5);
 		string[] memory _fieldValues = new string[](5);
@@ -61,7 +66,7 @@ contract UltraVerifierTest is Test {
 		_fieldNames[3] = "y2";
 		_fieldNames[4] = "d";
 
-		// _fieldValues[0] = string(abi.encode(x1));
+		_fieldValues[0] = Strings.toString(x1);
 		_fieldValues[0] = "1";
 		_fieldValues[1] = "2";
 		_fieldValues[2] = "3";
