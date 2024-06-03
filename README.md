@@ -1,8 +1,20 @@
-### Noir Exercises for games
+## Noir Exercises for games
 
-Run `forge test`
+#### Oracle Test
 
-Or deploy and test on etherscan with `script/deploy`
+First run the oracle server with:
+`go run go-server/cmd/main.go`
+
+Then `cd circuits-radius` and run `nargo test --oracle-resolver http://localhost:5555`
+
+
+#### Forge Test
+
+Return to root directory and run `forge test`.
+
+Noir Oracle has some issues with forge testing, so forge tests avoid using oracles.
+
+Then deploy and test on etherscan with `script/deploy`
 
 E.g: https://holesky.etherscan.io/address/0x5d89277347de62a32d0f81b7c08b99f111ff1f27#readContract
 
@@ -17,3 +29,4 @@ _publicInputs (bytes32[])
 ```
 [0x0000000000000000000000000000000000000000000000000000000000000032]
 ```
+
