@@ -1,5 +1,5 @@
 
-fn main(x1: u32, x2: u32, y1: u32, y2: u32, d: pub u32) {
+fn main(x1: i32, x2: i32, y1: i32, y2: i32, d: pub i32) {
 
     // distance = sqrt( (x2 - x1)^2 + (y2 - y1)^2 )
     let dx = x2 - x1;
@@ -15,6 +15,7 @@ fn main(x1: u32, x2: u32, y1: u32, y2: u32, d: pub u32) {
     let maxdist = d;
 
     let sqrtd = get_sqrt(dx2_dy2);
+    // println(f"ceil(sqrt) of {dx2_dy2} = {sqrtd}"); // remove println for noir-js
     // let sqrtd = dx2_dy2;
 
     assert(sqrtd <= maxdist);
@@ -23,9 +24,9 @@ fn main(x1: u32, x2: u32, y1: u32, y2: u32, d: pub u32) {
 
 
 #[oracle(GetSqrt)]
-unconstrained fn sqrt(d: u32) -> u32 { }
+unconstrained fn sqrt(d: i32) -> i32 { }
 
-unconstrained fn get_sqrt(d: u32) -> u32 {
+unconstrained fn get_sqrt(d: i32) -> i32 {
     sqrt(d)
 }
 
@@ -38,8 +39,8 @@ fn test_main() {
 
 #[test]
 fn test_main_oracle() {
-    let maxdist = get_sqrt(222);
-    main(1, 4, 1, 5, maxdist);
+    let maxdist = get_sqrt(225);
+    main(1, 4, 1, 6, maxdist);
 
 }
 

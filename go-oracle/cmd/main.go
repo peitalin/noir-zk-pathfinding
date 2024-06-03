@@ -31,7 +31,7 @@ type IncomingRpc struct {
 	//   "jsonrpc": "2.0",
 
 	Method string `json:"method"`
-	//   "method": "GetSqrt", // method name must match SetSqrt defined in Aztec main.nr
+	//   "method": "GetSqrt", // method name is GetSqrt defined in Aztec main.nr
 
 	Params []SingleForeignCallParam `json:"params"`
 	//   "params": { "Single": 13 },
