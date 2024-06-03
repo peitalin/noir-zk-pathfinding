@@ -64,14 +64,14 @@ func (sqrt *GetSqrt) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	numberToSquare := payload.Params[0].Single
 	n, _ := strconv.ParseUint(numberToSquare, 16, 64)
-	fmt.Println("incoming number to square: ", n)
+	fmt.Println("incoming number to squareroot: ", n)
 
 	// parse hex to int
-	squaredNumber := math.Ceil(math.Sqrt(float64(n)))
+	squaredNumber := math.Sqrt(float64(n))
 	// watchout for floats
 	fmt.Println("sqrt n: ", squaredNumber)
-	var s string = strconv.FormatUint(uint64(squaredNumber), 10)
-	fmt.Println("toString s: ", s)
+	var s string = strconv.FormatUint(uint64(math.Ceil(squaredNumber)), 10)
+	fmt.Println("toString(math.Ceil(n)): ", s)
 	xsingle := SingleForeignCallParam{s}
 
 	sqrtRes, err2 := json.Marshal(&RpcResponse{

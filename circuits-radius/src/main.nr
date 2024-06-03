@@ -11,11 +11,11 @@ fn main(x1: u32, x2: u32, y1: u32, y2: u32, d: pub u32) {
     let dx2_dy2 = dx2 + dy2;
 
     // instead of sqrt, we square distance
-    let maxdist = d * d;
-    // let maxdist = d;
+    // let maxdist = d * d;
+    let maxdist = d;
 
-    // let sqrtd = get_sqrt(dx2_dy2);
-    let sqrtd = dx2_dy2;
+    let sqrtd = get_sqrt(dx2_dy2);
+    // let sqrtd = dx2_dy2;
 
     assert(sqrtd <= maxdist);
 
@@ -38,7 +38,7 @@ fn test_main() {
 
 #[test]
 fn test_main_oracle() {
-    let maxdist = get_sqrt(225);
+    let maxdist = get_sqrt(222);
     main(1, 4, 1, 5, maxdist);
 
 }

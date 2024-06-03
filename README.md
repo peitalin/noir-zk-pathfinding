@@ -10,7 +10,7 @@ Then `cd circuits-radius` and run `nargo test --oracle-resolver http://localhost
 
 #### Forge Test
 
-run `nargo compile` and `nargo prove --oracle-resolver http://localhost:5555`
+run `nargo compile`, `nargo codegen-verifier` and `nargo prove --oracle-resolver http://localhost:5555`
 (go Oracle must be up). Then return to the root directory and run `forge test`.
 
 

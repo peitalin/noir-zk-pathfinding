@@ -55,7 +55,9 @@ contract UltraVerifierTest is Test {
 	function test_DynamicProof(uint32 x1) public {
 		// run this 2 times as it uses scripts with read/write operations, slow
 
-		vm.assume(0 < x1 && x1 < 10);
+		vm.assume(2 < x1);
+		vm.assume(x1 < 5);
+		console.log("x1:", Strings.toString(x1));
 
 		string[] memory _fieldNames = new string[](5);
 		string[] memory _fieldValues = new string[](5);
@@ -67,15 +69,14 @@ contract UltraVerifierTest is Test {
 		_fieldNames[4] = "d";
 
 		_fieldValues[0] = Strings.toString(x1);
-		_fieldValues[0] = "1";
-		_fieldValues[1] = "2";
-		_fieldValues[2] = "3";
-		_fieldValues[3] = "4";
-		_fieldValues[4] = "49";
+		_fieldValues[1] = "4";
+		_fieldValues[2] = "1";
+		_fieldValues[3] = "5";
+		_fieldValues[4] = "225";
 
 		bytes memory proofBytes = generateDynamicProof("test1", _fieldNames, _fieldValues);
 
-		bytes32 _expectCorrectInput1 = 0x0000000000000000000000000000000000000000000000000000000000000031;
+		bytes32 _expectCorrectInput1 = 0x00000000000000000000000000000000000000000000000000000000000000e1;
 		bytes32[] memory expectCorrectInputs = new bytes32[](1);
 		expectCorrectInputs[0] = _expectCorrectInput1;
 
