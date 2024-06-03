@@ -1,9 +1,12 @@
 ### Noir Exercises for games
 
+Run `forge test`
 
-https://holesky.etherscan.io/address/0x5d89277347de62a32d0f81b7c08b99f111ff1f27#readContract
+Or deploy and test on etherscan with `script/deploy`
 
-verify(_proof, _publicInputs)
+E.g: https://holesky.etherscan.io/address/0x5d89277347de62a32d0f81b7c08b99f111ff1f27#readContract
+
+`verify(_proof, _publicInputs)`
 
 _proof (bytes):
 ```
