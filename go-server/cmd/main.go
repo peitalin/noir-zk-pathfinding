@@ -31,7 +31,7 @@ type IncomingRpc struct {
 	//   "jsonrpc": "2.0",
 
 	Method string `json:"method"`
-	//   "method": "Calculator.Add",
+	//   "method": "GetSqrt", // method name must match SetSqrt defined in Aztec main.nr
 
 	Params []SingleForeignCallParam `json:"params"`
 	//   "params": { "Single": 13 },
@@ -67,7 +67,7 @@ func (sqrt *GetSqrt) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("incoming number to square: ", n)
 
 	// parse hex to int
-	squaredNumber := math.Sqrt(float64(n))
+	squaredNumber := math.Ceil(math.Sqrt(float64(n)))
 	// watchout for floats
 	fmt.Println("sqrt n: ", squaredNumber)
 	var s string = strconv.FormatUint(uint64(squaredNumber), 10)

@@ -10,15 +10,16 @@ Then `cd circuits-radius` and run `nargo test --oracle-resolver http://localhost
 
 #### Forge Test
 
-Return to root directory and run `forge test`.
+run `nargo compile` and `nargo prove --oracle-resolver http://localhost:5555`
+(go Oracle must be up). Then return to the root directory and run `forge test`.
 
-Noir Oracle has some issues with forge testing, so forge tests avoid using oracles.
 
-Then deploy and test on etherscan with `script/deploy`
+
+#### Deploy tests
+Deploy and test on etherscan with `script/deploy.sh`
 
 E.g: https://holesky.etherscan.io/address/0x5d89277347de62a32d0f81b7c08b99f111ff1f27#readContract
-
-`verify(_proof, _publicInputs)`
+Connect and call: `verify(_proof, _publicInputs)`
 
 _proof (bytes):
 ```
