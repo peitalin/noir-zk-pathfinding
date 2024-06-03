@@ -12,13 +12,35 @@ fn main(x1: u32, x2: u32, y1: u32, y2: u32, d: pub u32) {
 
     // instead of sqrt, we square distance
     let maxdist = d * d;
+    // let maxdist = d;
 
-    assert(dx2_dy2 <= maxdist);
+    // let sqrtd = get_sqrt(dx2_dy2);
+    let sqrtd = dx2_dy2;
+
+    assert(sqrtd <= maxdist);
+
 }
+
+
+#[oracle(GetSqrt)]
+unconstrained fn sqrt(d: u32) -> u32 { }
+
+unconstrained fn get_sqrt(d: u32) -> u32 {
+    sqrt(d)
+}
+
 
 #[test]
 fn test_main() {
-    main(1, 2, 3, 4, 50);
+    main(1, 4, 1, 5, 49);
 
 }
+
+#[test]
+fn test_main_oracle() {
+    let maxdist = get_sqrt(225);
+    main(1, 4, 1, 5, maxdist);
+
+}
+
 
