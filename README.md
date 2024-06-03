@@ -1,5 +1,8 @@
 ## Noir Exercises for games
 
+Prove that a player's attempted move is within maxDist:
+`sqrt( (x2 - x1)^2 + (y2 - y1)^2 )`
+
 #### Oracle Test
 
 First run the oracle server with:
