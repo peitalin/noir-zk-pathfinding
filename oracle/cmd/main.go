@@ -6,9 +6,13 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+
+	astar "noir.com/oracle/astar"
 )
 
 func main() {
+
+	astar.Test1()
 
 	port := 5555
 	fmt.Printf("Starting server at %v...\n", port)
