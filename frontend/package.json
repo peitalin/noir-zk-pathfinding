@@ -1,11 +1,11 @@
 {
-  "name": "radius",
+  "name": "noir A*",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "start": "npx tsx kindex.ts"
+    "start": "npx tsx index.ts"
   },
   "author": "",
   "license": "ISC",
