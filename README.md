@@ -7,7 +7,7 @@ Prove that a player's attempted A* pathfinding move from start (x1, y1) to end (
 [0 0 X 0 1 0 0 X 0 0 0 1 0 0 0]
 [0 0 0 X 1 0 X 0 0 0 0 0 0 0 0]
 [0 0 0 X 1 X 0 0 0 0 0 0 0 0 0]
-[0 0 0 0 4 0 0 0 0 0 0 0 0 0 0]
+[0 0 0 0 X 0 0 0 0 0 0 0 0 0 0]
 [0 0 0 0 1 0 0 0 0 0 0 0 0 0 0]
 [1 0 0 0 1 0 0 0 0 0 0 0 0 0 0]
 [0 0 0 0 1 0 0 0 0 0 0 0 0 0 0]
@@ -21,7 +21,7 @@ Prove that a player's attempted A* pathfinding move from start (x1, y1) to end (
 max_steps=10
 ```
 
-Currently relies on offchain A* calculation from the go-oracle (whose output is constrained inside Noir circuits). Next step is to try re-implement A* logic directly in Noir as circuits (and hope to work around limitations in Noir v30, e.g. lack of nested slices).
+Currently relies on offchain A* calculation from the go-oracle (whose output is constrained inside Noir circuits). Next step is to try re-implement A* logic directly in Noir as circuits (and hope to work around limitations in the current version of Noir, e.g. lack of nested slices).
 
 #### Oracle Test
 
