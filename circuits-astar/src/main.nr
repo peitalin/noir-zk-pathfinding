@@ -3,7 +3,13 @@ use foo::bar;
 use dep::std::slice;
 
 
-fn main(x1: i32, x2: i32, y1: i32, y2: i32, max_steps: pub i32) {
+fn main(start: [i32; 2], end: [i32; 2], max_steps: pub i32) -> pub i32 {
+
+    let x1 = start[0];
+    let y1 = start[1];
+
+    let x2 = end[0];
+    let y2 = end[1];
 
     //// Prove move distance doesn't exceed radius
     // // distance = sqrt( (x2 - x1)^2 + (y2 - y1)^2 )
@@ -30,6 +36,7 @@ fn main(x1: i32, x2: i32, y1: i32, y2: i32, max_steps: pub i32) {
     // println(f"assert A* path length: {path_len} <= max_steps: {max_steps}");
     assert(path_len <= max_steps);
 
+    path_len
 }
 
 
@@ -88,7 +95,8 @@ fn pruneAstarPath(pathArray: [[i32; 2]; 10]) -> [[i32; 2]] {
 fn test_main() {
      // let radius = 49;
     let max_steps = 10;
-    main(1, 4, 1, 5, max_steps);
+    let steps = main([1, 1], [4, 5], max_steps);
+    println(f"A* number of steps: {steps}");
 }
 
 #[test]

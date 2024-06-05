@@ -15,7 +15,8 @@ contract UltraVerifierTest is Test {
 
 	// public inputs
 	bytes32 _correctInput1 = 0x000000000000000000000000000000000000000000000000000000000000000a;
-	bytes32[] correctInputs = new bytes32[](1);
+	bytes32 _returnedValue = 0x0000000000000000000000000000000000000000000000000000000000000004;
+	bytes32[] correctInputs = new bytes32[](2);
 
 	bytes32 _wrongInput1 = 0x0000000000000000000000000000000000000000000000000000000000111111;
 	bytes32[] wrongInputs = new bytes32[](1);
@@ -31,6 +32,7 @@ contract UltraVerifierTest is Test {
 	function test_AStarPath_CorrectInput() public {
 
 		correctInputs[0] = _correctInput1;
+		correctInputs[1] = _returnedValue;
 		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
@@ -42,6 +44,7 @@ contract UltraVerifierTest is Test {
 	function testFail_AStarPath_WrongInput() public {
 
 		wrongInputs[0] = _wrongInput1;
+		wrongInputs[1] = _wrongInput1;
 		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
@@ -52,33 +55,32 @@ contract UltraVerifierTest is Test {
 
 
 	/// forge-config: default.fuzz.runs = 2
-	function test_DynamicProof(uint32 x1) public {
+	function test_DynamicProof(uint32 x1, uint32 y1) public {
 		// run this 2 times as it uses scripts with read/write operations, slow
 
-		vm.assume(2 < x1);
-		vm.assume(x1 < 5);
-		console.log("x1:", Strings.toString(x1));
+		// constrain to these 3 starting points, which result in the
+		// same returnedValues (num steps A* pathfidning algo takes)
+		vm.assume(
+			x1 == 1 && y1 == 1 ||
+			x1 == 2 && y1 == 1 ||
+			x1 == 1 && y1 == 2);
 
-		string[] memory _fieldNames = new string[](5);
-		string[] memory _fieldValues = new string[](5);
+		string[] memory _fieldNames = new string[](3);
+		string[] memory _fieldValues = new string[](3);
 
-		_fieldNames[0] = "x1";
-		_fieldNames[1] = "x2";
-		_fieldNames[2] = "y1";
-		_fieldNames[3] = "y2";
-		_fieldNames[4] = "max_steps";
+		_fieldNames[0] = "start";
+		_fieldNames[1] = "end";
+		_fieldNames[2] = "max_steps";
 
-		_fieldValues[0] = Strings.toString(x1);
-		_fieldValues[1] = "4";
-		_fieldValues[2] = "1";
-		_fieldValues[3] = "5";
-		_fieldValues[4] = "10";
+		_fieldValues[0] = string(abi.encodePacked('["', Strings.toString(x1), '", "', Strings.toString(y1), '"]'));
+		_fieldValues[1] = '["4", "5"]';
+		_fieldValues[2] = "10";
 
 		bytes memory proofBytes = generateDynamicProof("test1", _fieldNames, _fieldValues);
 
-		bytes32 _expectCorrectInput1 = 0x000000000000000000000000000000000000000000000000000000000000000a;
-		bytes32[] memory expectCorrectInputs = new bytes32[](1);
-		expectCorrectInputs[0] = _expectCorrectInput1;
+		bytes32[] memory expectCorrectInputs = new bytes32[](2);
+		expectCorrectInputs[0] = _correctInput1;
+		expectCorrectInputs[1] = _returnedValue;
 
 		astar.verifyDistance(proofBytes, expectCorrectInputs);
 	}
@@ -87,6 +89,7 @@ contract UltraVerifierTest is Test {
 	function test_PlonkVK() public {
 
 		correctInputs[0] = _correctInput1;
+		correctInputs[1] = _returnedValue;
 		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
