@@ -1,8 +1,6 @@
 ## Noir Exercises for games
 
 Prove that a player's attempted A* pathfinding move from start (x1, y1) to end (x2, y2) is within max_steps:
-
-A* Path:
 ```
 [4 0 0 0 1 0 0 0 0 0 0 1 0 0 0]
 [0 4 0 0 1 0 0 0 0 0 0 1 0 0 0]
@@ -19,13 +17,14 @@ A* Path:
 [0 0 0 0 0 0 0 0 0 1 0 0 0 0 0]
 [0 0 0 0 0 0 0 0 0 1 0 0 0 0 0]
 [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+
+max_steps=10
 ```
 
 #### Oracle Test
 
 First run the oracle server with:
 `go run go-oracle/cmd/main.go`
-
 
 Then open a separate terminal in the same directly and run: `cd circuits-astar` and run `nargo test --oracle-resolver http://localhost:5555`
 
@@ -35,6 +34,8 @@ Then open a separate terminal in the same directly and run: `cd circuits-astar` 
 run `nargo compile`, `nargo codegen-verifier` and `nargo prove --oracle-resolver http://localhost:5555`
 (go oracle must be up). Then return to the root directory and run `forge test`.
 
+Configure start=(`x1`, `y1`), end=(`x2`, `y2`), and `max_steps` values in the `circuits-astar/src/Prover.toml` file.
+
 
 #### Frontend NoirJs client example
 
@@ -42,6 +43,7 @@ Go to root directly, and run: `cd ./frontend && npm install && npx tsx ./index.t
 
 Make sure the go-oracle is running in a separate process on localhost:5555.
 
+Configure start=(`x1`, `y1`), end=(`x2`, `y2`), and `max_steps` values in the main() function in `index.ts`.
 
 
 #### Deploy Solidity Verifier
