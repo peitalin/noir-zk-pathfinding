@@ -7,12 +7,11 @@ import (
 )
 
 func Test1() {
-	fmt.Println("astar!!!!!")
 
-	A := Node{Parent: nil, Position: Position{col: 0, row: 0}}
-	B := Node{Parent: nil, Position: Position{col: 0, row: 14}}
-	C := Node{Parent: nil, Position: Position{col: 14, row: 0}}
-	D := Node{Parent: nil, Position: Position{col: 14, row: 14}}
+	A := Node{Parent: nil, Position: Position{Col: 0, Row: 0}}
+	B := Node{Parent: nil, Position: Position{Col: 0, Row: 14}}
+	C := Node{Parent: nil, Position: Position{Col: 14, Row: 0}}
+	D := Node{Parent: nil, Position: Position{Col: 14, Row: 14}}
 
 	fmt.Println("node A:", A)
 	fmt.Println("node B:", B)
@@ -21,25 +20,25 @@ func Test1() {
 
 	fmt.Println("A == C", A.eq(C))
 
-	mazeB := createMaze()
-	mazeC := createMaze()
-	mazeD := createMaze()
+	mazeB := CreateMaze()
+	mazeC := CreateMaze()
+	mazeD := CreateMaze()
 
 	pathB := AStar(mazeB, A, B)
 	fmt.Println("\n\nA* Path to B: ", pathB)
-	printPathOnMaze(&mazeB, A, pathB)
+	PrintPathOnMaze(&mazeB, A, pathB)
 
 	pathC := AStar(mazeC, A, C)
 	fmt.Println("\n\nA* Path to C: ", pathC)
-	printPathOnMaze(&mazeC, A, pathC)
+	PrintPathOnMaze(&mazeC, A, pathC)
 
 	pathD := AStar(mazeD, A, D)
 	fmt.Println("\n\nA* Path to D: ", pathD)
-	printPathOnMaze(&mazeD, A, pathD)
+	PrintPathOnMaze(&mazeD, A, pathD)
 
 }
 
-func createMaze() Maze {
+func CreateMaze() Maze {
 	return Maze{
 		{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
 		{0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
@@ -59,13 +58,13 @@ func createMaze() Maze {
 	}
 }
 
-func printPathOnMaze(maze *Maze, start Node, path []Position) {
+func PrintPathOnMaze(maze *Maze, start Node, path []Position) {
 
 	newMaze := *maze
-	newMaze[start.Position.row][start.Position.col] = 4
+	newMaze[start.Position.Row][start.Position.Col] = 4
 	fmt.Println("\nA* Path:")
 	for _, p := range path {
-		newMaze[p.row][p.col] = 4
+		newMaze[p.Row][p.Col] = 4
 	}
 	for _, row := range newMaze {
 		fmt.Println(row)
@@ -73,12 +72,12 @@ func printPathOnMaze(maze *Maze, start Node, path []Position) {
 }
 
 type Position struct {
-	col int32
-	row int32
+	Col int32
+	Row int32
 }
 
 func (p Position) String() string {
-	return fmt.Sprintf("(col=%v, row=%v)", p.col, p.row)
+	return fmt.Sprintf("(col=%v, row=%v)", p.Col, p.Row)
 }
 
 type Node struct {
@@ -92,12 +91,12 @@ func (n Node) String() string {
 	// 	n.Position.col, n.Position.row,
 	// 	n.f, n.g, n.h,
 	// )
-	return fmt.Sprintf(`Node(col=%v, row=%v) `, n.Position.col, n.Position.row)
+	return fmt.Sprintf(`Node(col=%v, row=%v) `, n.Position.Col, n.Position.Row)
 }
 
 func (n *Node) eq(otherNode Node) bool {
-	return n.Position.row == otherNode.Position.row &&
-		n.Position.col == otherNode.Position.col
+	return n.Position.Row == otherNode.Position.Row &&
+		n.Position.Col == otherNode.Position.Col
 }
 
 type Maze = [][]int
@@ -119,22 +118,21 @@ func AStar(maze Maze, start_node Node, end_node Node) []Position {
 
 	open_list = append(open_list, start_node)
 
-	var adjacentMoves []Position
-	adjacentMoves = []Position{
-		Position{0, 1},   // north
-		Position{1, 1},   // north-east
-		Position{1, 0},   // east
-		Position{1, -1},  // south-east
-		Position{0, -1},  // south
-		Position{-1, -1}, // south-west
-		Position{-1, 0},  // west
-		Position{-1, 1},  // north-west
+	adjacentMoves := []Position{
+		{0, 1},   // north
+		{1, 1},   // north-east
+		{1, 0},   // east
+		{1, -1},  // south-east
+		{0, -1},  // south
+		{-1, -1}, // south-west
+		{-1, 0},  // west
+		{-1, 1},  // north-west
 	}
-	// adjacentMoves = []Position{
-	// 	Position{0, 1},   // north
-	// 	Position{1, 0},   // east
-	// 	Position{0, -1},  // south
-	// 	Position{-1, 0},  // west
+	// adjacentMoves := []Position{
+	// 	{0, 1},   // north
+	// 	{1, 0},   // east
+	// 	{0, -1},  // south
+	// 	{-1, 0},  // west
 	// }
 
 	// while loop
@@ -163,15 +161,15 @@ func AStar(maze Maze, start_node Node, end_node Node) []Position {
 		for _, move := range adjacentMoves {
 			// Get node position
 			node_position := Position{
-				row: current_node.Position.row + move.row,
-				col: current_node.Position.col + move.col,
+				Row: current_node.Position.Row + move.Row,
+				Col: current_node.Position.Col + move.Col,
 			}
 			// Make sure within range
 			if !isInMap(maze, node_position) {
 				continue
 			}
 			// Make sure walkable terrain
-			if maze[node_position.row][node_position.col] != 0 {
+			if maze[node_position.Row][node_position.Col] != 0 {
 				continue
 			}
 
@@ -237,17 +235,17 @@ func isNodeOnOpenList(open_list []Node, child_node Node) bool {
 }
 
 func nodeDistance(s Node, e Node) float64 {
-	x1 := float64(s.Position.row)
-	x2 := float64(e.Position.row)
-	y1 := float64(s.Position.col)
-	y2 := float64(e.Position.col)
+	x1 := float64(s.Position.Row)
+	x2 := float64(e.Position.Row)
+	y1 := float64(s.Position.Col)
+	y2 := float64(e.Position.Col)
 	return math.Pow(x2-x1, 2) + math.Pow(y2-y1, 2)
 }
 
 func isInMap(maze Maze, position Position) bool {
 
-	row := position.row
-	col := position.col
+	row := position.Row
+	col := position.Col
 
 	maze_max_row := int32(len(maze) - 1)
 	maze_max_col := int32(len(maze[len(maze)-1]) - 1)
