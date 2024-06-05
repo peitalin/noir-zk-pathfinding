@@ -2,8 +2,8 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {UltraVerifier} from "../circuits-radius/contract/radius/plonk_vk.sol";
-import {Radius} from "../src/Radius.sol";
+import {UltraVerifier} from "../circuits-astar/contract/astar/plonk_vk.sol";
+import {Astar} from "../src/Astar.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 
@@ -11,10 +11,10 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract UltraVerifierTest is Test {
 
 	UltraVerifier public plonkVerifier;
-	Radius public radius;
+	Astar public astar;
 
 	// public inputs
-	bytes32 _correctInput1 = 0x00000000000000000000000000000000000000000000000000000000000000e1;
+	bytes32 _correctInput1 = 0x000000000000000000000000000000000000000000000000000000000000000a;
 	bytes32[] correctInputs = new bytes32[](1);
 
 	bytes32 _wrongInput1 = 0x0000000000000000000000000000000000000000000000000000000000111111;
@@ -25,27 +25,27 @@ contract UltraVerifierTest is Test {
 
 	function setUp() public {
 		plonkVerifier = new UltraVerifier();
-		radius = new Radius(plonkVerifier);
+		astar = new Astar(plonkVerifier);
 	}
 
-	function test_RadiusCorrectInput() public {
+	function test_AStarPath_CorrectInput() public {
 
 		correctInputs[0] = _correctInput1;
-		string memory proofStr = vm.readLine("./circuits-radius/proofs/radius.proof");
+		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
-		bool result = radius.verifyDistance(proof, correctInputs);
+		bool result = astar.verifyDistance(proof, correctInputs);
 		console.log("proof verified: ", result);
 		assert(result);
 	}
 
-	function testFail_RadiusWrongInput() public {
+	function testFail_AStarPath_WrongInput() public {
 
 		wrongInputs[0] = _wrongInput1;
-		string memory proofStr = vm.readLine("./circuits-radius/proofs/radius.proof");
+		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
-		bool result = radius.verifyDistance(proof, wrongInputs);
+		bool result = astar.verifyDistance(proof, wrongInputs);
 		console.log("proof verified: ", result);
 		assert(result);
 	}
@@ -66,28 +66,28 @@ contract UltraVerifierTest is Test {
 		_fieldNames[1] = "x2";
 		_fieldNames[2] = "y1";
 		_fieldNames[3] = "y2";
-		_fieldNames[4] = "d";
+		_fieldNames[4] = "max_steps";
 
 		_fieldValues[0] = Strings.toString(x1);
 		_fieldValues[1] = "4";
 		_fieldValues[2] = "1";
 		_fieldValues[3] = "5";
-		_fieldValues[4] = "225";
+		_fieldValues[4] = "10";
 
 		bytes memory proofBytes = generateDynamicProof("test1", _fieldNames, _fieldValues);
 
-		bytes32 _expectCorrectInput1 = 0x00000000000000000000000000000000000000000000000000000000000000e1;
+		bytes32 _expectCorrectInput1 = 0x000000000000000000000000000000000000000000000000000000000000000a;
 		bytes32[] memory expectCorrectInputs = new bytes32[](1);
 		expectCorrectInputs[0] = _expectCorrectInput1;
 
-		radius.verifyDistance(proofBytes, expectCorrectInputs);
+		astar.verifyDistance(proofBytes, expectCorrectInputs);
 	}
 
 
 	function test_PlonkVK() public {
 
 		correctInputs[0] = _correctInput1;
-		string memory proofStr = vm.readLine("./circuits-radius/proofs/radius.proof");
+		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
 		bool result = plonkVerifier.verify(proof, correctInputs);
@@ -127,7 +127,7 @@ contract UltraVerifierTest is Test {
 	ffi_command[1] = _testName;
 	bytes memory commandResponse = vm.ffi(ffi_command);
 	console.log(string(commandResponse));
-	string memory _newProof = vm.readLine(string.concat("/tmp/aztec/", _testName, "/proofs/radius.proof"));
+	string memory _newProof = vm.readLine(string.concat("/tmp/aztec/", _testName, "/proofs/astar.proof"));
 	return vm.parseBytes(_newProof);
   }
 }

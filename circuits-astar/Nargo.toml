@@ -1,5 +1,5 @@
 [package]
-name = "radius"
+name = "astar"
 type = "bin"
 authors = [""]
 compiler_version = ">=0.29.0"

@@ -1,7 +1,6 @@
 ## Noir Exercises for games
 
-Prove that a player's attempted move is within maxDist:
-`sqrt( (x2 - x1)^2 + (y2 - y1)^2 )`
+Prove that a player's attempted A* pathfinding move from start (x1, y1) to end (x2, y2) is within max_steps:
 
 #### Oracle Test
 
@@ -9,13 +8,13 @@ First run the oracle server with:
 `go run go-oracle/cmd/main.go`
 
 
-Then open a separate terminal in the same directly and run: `cd circuits-radius` and run `nargo test --oracle-resolver http://localhost:5555`
+Then open a separate terminal in the same directly and run: `cd circuits-astar` and run `nargo test --oracle-resolver http://localhost:5555`
 
 
 #### Forge Test
 
 run `nargo compile`, `nargo codegen-verifier` and `nargo prove --oracle-resolver http://localhost:5555`
-(go Oracle must be up). Then return to the root directory and run `forge test`.
+(go oracle must be up). Then return to the root directory and run `forge test`.
 
 
 #### Frontend NoirJs client example
@@ -29,7 +28,7 @@ Make sure the go-oracle is running in a separate process on localhost:5555.
 #### Deploy Solidity Verifier
 Deploy and test on etherscan with `script/deploy.sh`
 
-E.g: https://holesky.etherscan.io/address/0x5d89277347de62a32d0f81b7c08b99f111ff1f27#readContract
+For example (old contract): https://holesky.etherscan.io/address/0x5d89277347de62a32d0f81b7c08b99f111ff1f27#readContract
 Connect and call: `verify(_proof, _publicInputs)`
 
 _proof (bytes):

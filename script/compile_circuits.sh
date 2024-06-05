@@ -8,10 +8,10 @@ nargo compile
 nargo codegen-verifier
 
 ### copy ./circuits-radius/contract/plonk_vk.sol to ./src/plonk_vk.sol
-cp ./circuits-radius/contract/plonk_vk.sol ./src/plonk_vk.sol
+cp ./circuits-astar/contract/plonk_vk.sol ./src/plonk_vk.sol
 
 ### run prover and generate proof
-nargo prove
+nargo prove --oracle-resolver http://localhost:5555
 # TODO: need to find a way to feed inputs from Prover.toml into proving process programatically
 # see `createFile.sh` and `prove.sh`
 
