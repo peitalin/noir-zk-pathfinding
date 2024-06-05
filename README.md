@@ -3,6 +3,7 @@
 Prove that a player's attempted A* pathfinding move from start (x1, y1) to end (x2, y2) is within max_steps:
 
 A* Path:
+```
 [4 0 0 0 1 0 0 0 0 0 0 1 0 0 0]
 [0 4 0 0 1 0 0 0 0 0 0 1 0 0 0]
 [0 0 4 0 1 0 0 0 0 0 0 1 0 0 0]
@@ -18,6 +19,7 @@ A* Path:
 [0 0 0 0 0 0 0 0 0 1 0 0 0 0 0]
 [0 0 0 0 0 0 0 0 0 1 0 0 0 0 0]
 [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+```
 
 #### Oracle Test
 
