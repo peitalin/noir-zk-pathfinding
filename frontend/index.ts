@@ -1,6 +1,6 @@
 import { BarretenbergBackend } from "@noir-lang/backend_barretenberg";
 import { Noir } from "@noir-lang/noir_js";
-import astar from "../circuits-astar/target/astar.json" assert { type: "json" };
+import astar from "../circuits/target/astar.json" assert { type: "json" };
 import { JSONRPCClient } from "json-rpc-2.0";
 
 const client = new JSONRPCClient((jsonRPCRequest) => {

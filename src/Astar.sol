@@ -1,6 +1,6 @@
 pragma solidity ^0.8.17;
 
-import "../circuits-astar/contract/astar/plonk_vk.sol";
+import "../circuits/contract/astar/plonk_vk.sol";
 
 contract Astar {
 

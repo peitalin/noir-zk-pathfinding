@@ -28,12 +28,12 @@ Currently relies on offchain A* calculation from the go-oracle (whose output is 
 First run the oracle server with:
 `go run go-oracle/cmd/main.go`
 
-Then open a separate terminal in the same directly and run: `cd circuits-astar` and run `nargo test --oracle-resolver http://localhost:5555`
+Then open a separate terminal in the same directly and run: `cd circuits` and run `nargo test --oracle-resolver http://localhost:5555 --showoutput`
 
 
 #### Forge Test
 
-run `nargo compile`, `nargo codegen-verifier` and `nargo prove --oracle-resolver http://localhost:5555`
+run `nargo compile --workspace`, `nargo codegen-verifier --workspace` and `nargo prove --oracle-resolver http://localhost:5555 --workspace`
 (go oracle must be up). Then return to the root directory and run `forge test`.
 
 Configure start=(`x1`, `y1`), end=(`x2`, `y2`), and `max_steps` values in the `circuits-astar/src/Prover.toml` file.

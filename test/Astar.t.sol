@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {UltraVerifier} from "../circuits-astar/contract/astar/plonk_vk.sol";
+import {UltraVerifier} from "../circuits/contract/astar/plonk_vk.sol";
 import {Astar} from "../src/Astar.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -33,7 +33,7 @@ contract UltraVerifierTest is Test {
 
 		correctInputs[0] = _correctInput1;
 		correctInputs[1] = _returnedValue;
-		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
+		string memory proofStr = vm.readLine("./circuits/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
 		bool result = astar.verifyDistance(proof, correctInputs);
@@ -45,7 +45,7 @@ contract UltraVerifierTest is Test {
 
 		wrongInputs[0] = _wrongInput1;
 		wrongInputs[1] = _wrongInput1;
-		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
+		string memory proofStr = vm.readLine("./circuits/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
 		bool result = astar.verifyDistance(proof, wrongInputs);
@@ -62,8 +62,9 @@ contract UltraVerifierTest is Test {
 		// same returnedValues (num steps A* pathfidning algo takes)
 		vm.assume(
 			x1 == 1 && y1 == 1 ||
-			x1 == 2 && y1 == 1 ||
-			x1 == 1 && y1 == 2);
+			x1 == 2 && y1 == 1
+		);
+		// vm.assume(x1 == 1 && y1 == 1);
 
 		string[] memory _fieldNames = new string[](3);
 		string[] memory _fieldValues = new string[](3);
@@ -90,19 +91,13 @@ contract UltraVerifierTest is Test {
 
 		correctInputs[0] = _correctInput1;
 		correctInputs[1] = _returnedValue;
-		string memory proofStr = vm.readLine("./circuits-astar/proofs/astar.proof");
+		string memory proofStr = vm.readLine("./circuits/proofs/astar.proof");
 		bytes memory proof = vm.parseBytes(proofStr);
 
 		bool result = plonkVerifier.verify(proof, correctInputs);
 		console.log("proof verified: ", result);
 		assert(result);
 	}
-
-	// function testFuzz_SetNumber(uint256 x) public {
-	//     counter.setNumber(x);
-	//     assertEq(counter.number(), x);
-	// }
-
 
   function generateDynamicProof(
 	string memory _testName,

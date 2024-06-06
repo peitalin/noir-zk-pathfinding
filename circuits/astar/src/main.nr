@@ -11,23 +11,6 @@ fn main(start: [i32; 2], end: [i32; 2], max_steps: pub i32) -> pub i32 {
     let x2 = end[0];
     let y2 = end[1];
 
-    //// Prove move distance doesn't exceed radius
-    // // distance = sqrt( (x2 - x1)^2 + (y2 - y1)^2 )
-    // let dx = x2 - x1;
-    // let dx2 = dx * dx;
-    // let dy = y2 - y1;
-    // let dy2 = dy * dy;
-
-    // let dx2_dy2 = dx2 + dy2;
-    // let sqrt_res = get_sqrt( dx2_dy2 ) as i32;
-    // let sqrt_sq = sqrt_res * sqrt_res;
-    // assert(sqrt_sq == dx2_dy2); // constrain the oracle response
-
-    // println(f"ceil(sqrt) of {dx2_dy2} = {sqrtd}"); // remove println for noir-js
-    // let max_dist = radius;
-    // // check move distance doesn't exceed radius
-    // assert(sqrt_res <= max_dist);
-
     let astar_path_results = get_astar_path([x1, y1], [x2, y2]);
     let path_pruned = pruneAstarPath(astar_path_results);
     let path_len = path_pruned.len() as i32;
@@ -37,14 +20,6 @@ fn main(start: [i32; 2], end: [i32; 2], max_steps: pub i32) -> pub i32 {
     assert(path_len <= max_steps);
 
     path_len
-}
-
-
-#[oracle(GetSqrt)]
-unconstrained fn sqrt(d: i32) -> i32 { }
-
-unconstrained fn get_sqrt(d: i32) -> i32 {
-    sqrt(d)
 }
 
 #[oracle(GetAstarPath)]
@@ -93,18 +68,9 @@ fn pruneAstarPath(pathArray: [[i32; 2]; 10]) -> [[i32; 2]] {
 
 #[test]
 fn test_main() {
-     // let radius = 49;
     let max_steps = 10;
     let steps = main([1, 1], [4, 5], max_steps);
     println(f"A* number of steps: {steps}");
-}
-
-#[test]
-fn test_sqrt_oracle() {
-    let sqrtnum = 225;
-    let maxdist = get_sqrt(sqrtnum);
-    println(f"sqrt({sqrtnum}) = {maxdist}");
-    assert(maxdist == 15);
 }
 
 #[test]
