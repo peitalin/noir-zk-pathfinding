@@ -4,7 +4,7 @@ mod compute_root;
 
 fn main(
     root: Field, // merkle root for the transfer
-    attack_coordinates: pub [Field; 2], // coordinates of planet to attack
+    attack_coordinates: [Field; 2], // coordinates of airship to attack
     missile_token_id: pub Field,
     merkle_index:  Field,
     hash_path: [Field; 3],
@@ -15,14 +15,13 @@ fn main(
     let hashed_attack_coordinates = std::hash::pedersen_hash([ attack_coordinates[0], attack_coordinates[1] ]);
     let note_commitment = std::hash::pedersen_hash([ priv_key, hashed_attack_coordinates ]);
 
-    // ensure the vote is member of eligible voters
+    // check the attack is an eligible committed attack
     let computed_root = std::merkle::compute_merkle_root(note_commitment, merkle_index, hash_path);
-    println(f"computed_root1: {computed_root}");
-    println(f"root: {root}");
+    // println(f"computed_root1: {computed_root}");
+    // println(f"root: {root}");
     assert(root == computed_root);
 
-
-    // return hash to check same priv_key doesn't re-use the same missile tokenId
+    // return hash to check same priv_key doesn't re-use the same missile tokenId, store in contract
     let nullifier = std::hash::pedersen_hash([ root, priv_key, missile_token_id ]);
     nullifier
 }
@@ -90,10 +89,11 @@ fn test_main() {
 
     // create commitment
     let attack_coordinates = [2, 3]; // coordinates of airship to attack, only player knows
-    let priv_key = 0x000000000000000000000000000000000000000000000000000000616c696365; // commitment[merkle_index]
+    let priv_key = 0x0000000000000000000000000000000000000000000000000000006666666666; // commitment[merkle_index]
     let merkle_index =  2; // some index that server keeps track of
     let root = generate_merkle_root(priv_key, merkle_index, attack_coordinates);
-    // root = 0x0324658c8f78bcb17fdcc2092a4597e939ac44c6c8889fd54a73df5e2869657d
+    // root = 0x28316dfda7642eb77dfbc82bba01da0da726f80624adc2a03fab4315fb538046
+    let expected_nullifier = 0x2c893e5c6d5d74a6b30cdb6aecf3b757571a93c78e33c6ed0e665b11fad2834a;
 
     let missile_token_id = 1234; // use as nullifier to prevent double spending
 
@@ -122,7 +122,6 @@ fn test_main() {
     );
     println("");
     println(f"Missile TokenId Nullifier: {nullifier_result}");
-    let expected_nullifier = 0x14c704ef63cef381567b698c7058e0e9e26b57bb92f255121b69ec58fe60186e;
-    // cannot reuse that missile again, burn it.
+    // cannot reuse that missile again, burn it in the contract.
     assert(nullifier_result == expected_nullifier);
 }
