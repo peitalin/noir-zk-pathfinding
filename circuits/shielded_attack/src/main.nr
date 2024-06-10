@@ -1,96 +1,128 @@
 use dep::std;
-use dep::std::ec::tecurve::affine::{Curve, Point};
+mod compute_root;
 
 
 fn main(
-  recipient: pub Field,
-  // Private key of note
-  // all notes have the same denomination
-  priv_key: Field,
-  // Merkle membership proof
-  note_root: pub Field,
-  index: Field,
-  note_hash_path: [Field; 3],
-  // Random secret to keep note_commitment private
-  secret: Field,
-  // Hash to be checked against the nullifier computed in the circuit
-  nullifierHash: pub Field,
+    root: Field, // merkle root for the transfer
+    attack_coordinates: pub [Field; 2], // coordinates of planet to attack
+    missile_token_id: pub Field,
+    merkle_index:  Field,
+    hash_path: [Field; 3],
+    priv_key: Field,
 ) -> pub Field {
-    // Compute public key from private key to show ownership
-    let pubkey = std::embedded_curve_ops::fixed_base_scalar_mul(priv_key, 1);
-    println(f"pubkey1: {pubkey}");
 
-    // let pubkey2 = std::embedded_curve_ops::fixed_base_scalar_mul(1, priv_key);
-    // println(f"pubkey2: {pubkey2}");
+    //prove knowledge of some priv_key and group secret
+    let hashed_attack_coordinates = std::hash::pedersen_hash([ attack_coordinates[0], attack_coordinates[1] ]);
+    let note_commitment = std::hash::pedersen_hash([ priv_key, hashed_attack_coordinates ]);
 
-    let pubkey_x = pubkey[0];
-    let pubkey_y = pubkey[1];
+    // ensure the vote is member of eligible voters
+    let computed_root = std::merkle::compute_merkle_root(note_commitment, merkle_index, hash_path);
+    println(f"computed_root1: {computed_root}");
+    println(f"root: {root}");
+    assert(root == computed_root);
 
-    // Compute input note commitment
-    let note_commitment = std::hash::pedersen_hash([pubkey_x, pubkey_y, secret]);
 
-    println("");
-    // Compute input note nullifier
-    let nullifier = std::hash::pedersen_hash([note_commitment, index, priv_key]);
-    println(f"nullifier:     {nullifier}");
-    println(f"nullifierHash: {nullifierHash}");
-    let nullifierEq = nullifierHash == nullifier;
-    println(f"nullifierHash == nullifier: {nullifierEq}");
-    // assert(nullifierHash == nullifier);
-
-    println("");
-    // Check that the input note commitment is in the root
-    let new_root = compute_root_from_leaf(note_commitment, index, note_hash_path);
-    println(f"new_root:  {new_root}");
-    println(f"note_root: {note_root}");
-    // assert(new_root == note_root);
-
-    // Cannot have unused variables, return the recipient as public output of the circuit
-    recipient
+    // return hash to check same priv_key doesn't re-use the same missile tokenId
+    let nullifier = std::hash::pedersen_hash([ root, priv_key, missile_token_id ]);
+    nullifier
 }
 
-// Returns the root of the tree from the provided leaf and its hashpath, using mimc hash
-fn compute_root_from_leaf(leaf : Field, index : Field, hash_path: [Field; 3]) -> Field {
-    let n = hash_path.len();
-    let index_bits = index.to_le_bits(n as u32);
-    let mut current = leaf;
-    for i in 0..n {
-        let path_bit = index_bits[i] as bool;
-        let (hash_left, hash_right) = if path_bit {
-            (hash_path[i], current)
-        } else {
-            (current, hash_path[i])
-        };
 
-        current = std::hash::mimc::mimc_bn254([hash_left, hash_right]);
-    };
-    current
+
+fn generate_merkle_root(priv_key: Field, index: Field, attack_coordinates: [Field; 2]) -> Field {
+
+    let mut commitments: [Field; 8] = [0; 8];
+    let hashed_attack_coordinates = std::hash::pedersen_hash([ attack_coordinates[0], attack_coordinates[1] ]);
+
+    // level 1 leafs
+    for i in 0..8 {
+        if i == index as u8 {
+            let commitment = std::hash::pedersen_hash([priv_key, hashed_attack_coordinates ]);
+            commitments[i] = commitment;
+        } else {
+            let commitment = std::hash::pedersen_hash([i as Field, hashed_attack_coordinates ]);
+            commitments[i] = commitment;
+        }
+    }
+
+    // level 2 branches
+    let branch_2a = std::hash::pedersen_hash([commitments[0], commitments[1]]);
+    let branch_2b = std::hash::pedersen_hash([commitments[2], commitments[3]]);
+    let branch_2c = std::hash::pedersen_hash([commitments[4], commitments[5]]);
+    let branch_2d = std::hash::pedersen_hash([commitments[6], commitments[7]]);
+
+    // level 3 branches
+    let branch_3a = std::hash::pedersen_hash([branch_2a, branch_2b]);
+    let branch_3b = std::hash::pedersen_hash([branch_2c, branch_2d]);
+
+    let merkle_root = std::hash::pedersen_hash([ branch_3a, branch_3b ]);
+
+    println("");
+    println("[Merkle Tree]");
+    println(f"Root:");
+    println(f"{merkle_root}");
+    println("");
+
+    println(f"Level 3 Branches");
+    println(f"L: {branch_3a}");
+    println(f"R: {branch_3b}");
+    println("");
+
+    println(f"Level 2 Branches");
+    println(f"LL: {branch_2a}");
+    println(f"LR: {branch_2b}");
+    println(f"RL: {branch_2c}");
+    println(f"RR: {branch_2d}");
+    println("");
+
+    println(f"Leafs:");
+    for i in 0..8 {
+        let c = commitments[i];
+        println(f"leaf {i}: {c}");
+    }
+    println("");
+    merkle_root
 }
 
 
 #[test]
 fn test_main() {
-    // # Random test key
-    let recipient = 0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8;
-    let priv_key = 0x000000000000000000000000000000000000000000000000000000616c696365;
-    let note_root = 0x2f36d4404719a30512af45be47c9732e916cb131933102b04ba6432602db209c;
-    let index = 0;
-    let note_hash_path = [
-        0x1e61bdae0f027b1b2159e1f9d3f8d00fa668a952dddd822fda80dc745d6f65cc,
-        0x0e4223f3925f98934393c74975142bd73079ab0621f4ee133cee050a3c194f1a,
-        0x2fd7bb412155bf8693a3bd2a3e7581a679c95c68a052f835dddca85fa1569a40
-    ];
-    let secret = 0x1929ea3ab8d9106a899386883d9428f8256cfedb3c4f6b66bf4aa4d28a79988f;
-    let nullifierHash = 0x2b5872c4bee7d321717e3849b1093039b7b2da26065eb9039465fc632b14562c;
 
-    let res = main(
-        recipient,
-        priv_key,
-        note_root,
-        index,
-        note_hash_path,
-        secret,
-        nullifierHash
+    // create commitment
+    let attack_coordinates = [2, 3]; // coordinates of airship to attack, only player knows
+    let priv_key = 0x000000000000000000000000000000000000000000000000000000616c696365; // commitment[merkle_index]
+    let merkle_index =  2; // some index that server keeps track of
+    let root = generate_merkle_root(priv_key, merkle_index, attack_coordinates);
+    // root = 0x0324658c8f78bcb17fdcc2092a4597e939ac44c6c8889fd54a73df5e2869657d
+
+    let missile_token_id = 1234; // use as nullifier to prevent double spending
+
+    let hash_path = [
+        // hash_paths are indexed from: bottom leafs first, left to right;
+        0x299e0f032bbd01fd16326a4a33a86c6477ffc15067e799b7be4114e9a4adbc3a, // commitment_3
+        0x0bd31882ca4cd0f269c3dd7ae76c0dfc397ab0a745a557de521bd693d68329aa, // LL in level 2
+        0x0e258815841ece6567e5b339064066e30e2d51a2e10d8cbfbfa56aebd285d83c, // R in level 3
+    ];
+    //             root
+    //          /        \
+    //        L            R
+    //     /     \       /    \
+    //   LL      LR     RL     RR
+    //  /  \   /  \    /  \    /  \
+    // 0   1   2   3   4   5   6   7
+
+
+    let nullifier_result = main(
+        root,
+        attack_coordinates,
+        missile_token_id,
+        merkle_index,
+        hash_path,
+        priv_key
     );
-    println(f"Shielded output: {res}");
+    println("");
+    println(f"Missile TokenId Nullifier: {nullifier_result}");
+    let expected_nullifier = 0x14c704ef63cef381567b698c7058e0e9e26b57bb92f255121b69ec58fe60186e;
+    // cannot reuse that missile again, burn it.
+    assert(nullifier_result == expected_nullifier);
 }
