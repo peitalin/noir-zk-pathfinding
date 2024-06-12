@@ -3,6 +3,7 @@ src = "src"
 out = "out"
 libs = ["lib"]
 fs_permissions = [
+  { access = "read-write", path = "./src/Hasher.json"},
   { access = "read-write", path = "./"},
   { access = "read-write", path = "/tmp/aztec"},
 ]
