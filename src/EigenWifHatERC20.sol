@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "./utils/Adminable.sol";
 
-contract EigenWifHatERC20 is Adminable, {
+contract EigenWifHatERC20 is Adminable, ERC20Upgradeable {
 
     using SafeERC20 for IERC20;
 

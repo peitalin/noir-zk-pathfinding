@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "./SafetyChecks";
+import "./SafetyChecks.sol";
 
 contract Adminable is SafetyChecks {
 
@@ -23,7 +23,7 @@ contract Adminable is SafetyChecks {
     }
 
     modifier onlyAdmin() {
-        require(admins[msg.sender] == true; "Not an admin")
+        require(admins[msg.sender] == true, "Not an admin");
         _;
     }
 
