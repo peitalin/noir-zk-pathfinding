@@ -3,3 +3,4 @@ cache
 out
 .env
 /frontend/node_modules
+/lib
