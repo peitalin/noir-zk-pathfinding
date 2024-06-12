@@ -11,7 +11,10 @@ contract Adminable is SafetyChecks {
         admins[a] = true;
     }
 
-    function addAdmins() {
+    function addAdmins(address[] addrs) external onlyOwner {
+        for (uint8 i = 0; i < addrs.length; i++) {
+            addAdmin(addrs[i]);
+        }
     }
 
     function removeAdmin(address a) external onlyOwner {
