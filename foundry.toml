@@ -12,6 +12,7 @@ ffi = true
 [rpc_endpoints]
 holesky = "https://holesky.drpc.org"
 
-
+[etherscan]
+holesky = { key = "${ETHERSCAN_API_KEY}" }
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

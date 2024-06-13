@@ -1,9 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {owner} from "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SafetyChecks {
+contract SafetyChecks is Ownable {
+
+    constructor() Ownable(msg.sender) {
+    }
 
     modifier nonZeroAddress(address _addr) {
         require(_addr != address(0), "0 address");

@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./SafetyChecks.sol";
 
 contract Adminable is SafetyChecks {
@@ -11,9 +12,9 @@ contract Adminable is SafetyChecks {
         admins[a] = true;
     }
 
-    function addAdmins(address[] addrs) external onlyOwner {
+    function addAdmins(address[] calldata addrs) external onlyOwner {
         for (uint8 i = 0; i < addrs.length; i++) {
-            addAdmin(addrs[i]);
+            admins[addrs[i]] = true;
         }
     }
 
