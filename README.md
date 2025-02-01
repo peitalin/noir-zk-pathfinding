@@ -1,4 +1,4 @@
-## Noir Exercises for games
+## Noir ZK Fog of War experiments for games
 
 Prove that a player's attempted A* pathfinding move from start (x1, y1) to end (x2, y2) is within max_steps, without revealing start and end points:
 ```
